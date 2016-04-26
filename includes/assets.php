@@ -147,6 +147,8 @@ class Assets {
 		} else {
 			$this->load_styles( $this->styles );
 		}
+
+		//do_action( 'simcal_scripts_loaded' );
 	}
 
 	/**
@@ -254,5 +256,16 @@ class Assets {
 			}
 
 		}
+
+		//do_action( 'simcal_scripts_loaded' );
+
+		$custom_css = "
+					.simcal-day-label {
+							background-color: #0f0;
+					}";
+
+		//echo 'Custom CSS: ' . $custom_css . '<br>';
+
+		wp_add_inline_style('simcal-default-calendar-grid', $custom_css);
 	}
 }

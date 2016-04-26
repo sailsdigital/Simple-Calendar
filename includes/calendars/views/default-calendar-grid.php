@@ -57,6 +57,8 @@ class Default_Calendar_Grid implements Calendar_View {
 	 */
 	public function __construct( $calendar = '' ) {
 		$this->calendar = $calendar;
+
+		//add_action( 'simcal_scripts_loaded', array( $this, 'inline_styles' ) );
 	}
 
 	/**
@@ -171,6 +173,25 @@ class Default_Calendar_Grid implements Calendar_View {
 				'media' => 'all',
 			),
 		);
+	}
+
+	public function inline_styles() {
+
+		if ( $this->calendar instanceof Default_Calendar ) {
+			$today_color = $this->calendar->today_color;
+			$day_color = $this->calendar->days_events_color;
+
+			echo 'Day color: ' . $day_color . '<br>';
+
+			$custom_css = "
+					.simcal-day-label {
+							background-color: {$day_color}!important;
+					}";
+
+			//echo 'Custom CSS: ' . $custom_css . '<br>';
+
+			wp_add_inline_style('simcal-default-calendar-grid', $custom_css);
+		}
 	}
 
 	/**
@@ -496,7 +517,7 @@ class Default_Calendar_Grid implements Calendar_View {
 			}
 
 			echo "\t" . '<div' . $border_style . '>' . "\n";
-			echo "\t\t" . '<span class="simcal-day-label simcal-day-number"' . $day_style . '>' . $day . '</span>' . "\n";
+			echo "\t\t" . '<span class="simcal-day-label simcal-day-number"' . ''/*$day_style*/ . '>' . $day . '</span>' . "\n";
 			echo "\t\t" . $list_events . "\n";
 			echo "\t\t";
 			echo '<span class="simcal-events-dots" style="display: none;">';
