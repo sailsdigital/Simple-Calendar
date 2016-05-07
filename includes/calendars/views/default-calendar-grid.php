@@ -150,6 +150,13 @@ class Default_Calendar_Grid implements Calendar_View {
 	 * @return array
 	 */
 	public function styles( $min = '' ) {
+
+		if ( $this->calendar instanceof Default_Calendar ) {
+			$today_color = $this->calendar->today_color;
+		} else {
+			$today_color = '#000';
+		}
+
 		return array(
 			'simcal-qtip' => array(
 				'src'   => SIMPLE_CALENDAR_ASSETS . 'css/vendor/jquery.qtip' . $min . '.css',
@@ -172,6 +179,11 @@ class Default_Calendar_Grid implements Calendar_View {
 				'ver'   => SIMPLE_CALENDAR_VERSION,
 				'media' => 'all',
 			),
+			'simcal-test-style' => array(
+				'inline' => true,
+				'deps'   => 'simcal-default-calendar-grid',
+				'styles' => ".simcal-default-calendar-grid.simcal-default-calendar-light .simcal-day-number { background-color: {$today_color}; }",
+			)
 		);
 	}
 
