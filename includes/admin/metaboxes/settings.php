@@ -825,6 +825,29 @@ class Settings implements Meta_Box {
 		</table>
 		<table>
 			<thead>
+			<tr><th colspan="2"><?php _e( 'Output Filtering', 'google-calendar-events' ); ?></th></tr>
+			</thead>
+			<tbody class="simcal-panel-section simcal-panel-section-filtering">
+			<?php
+
+			$filter_regex = esc_attr( get_post_meta( $post->ID, '_filter_regex_user', true ) );
+			?>
+			<tr class="simcal-panel-field">
+				<th><label for="_feed_cache_user_amount"><?php _ex( 'PCRE Filter', 'Cache maximum interval', 'google-calendar-events' ); ?></label></th>
+				<td>
+					<input type="text"
+						   name="_filter_regex_user"
+						   id="_filter_regex_user"
+						   class="simcal-field simcal-field-text"
+						   value="<?php echo $filter_regex; ?>"
+						   min="0" />
+					<i class="simcal-icon-help simcal-help-tip" data-tip="<?php _e( 'Since Google\'s search function is lacking, here you can set a Perl Compatible Regular Expression (PCRE) to further refine the events displayed. If the PCRE is matched, the event WILL NOT be displayed.', 'google-calendar-events' ); ?>"></i>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<table>
+			<thead>
 				<tr>
 					<th colspan="2"><?php _e( 'Cache', 'google-calendar-events' ); ?></th>
 				</tr>
@@ -1028,6 +1051,10 @@ class Settings implements Meta_Box {
 		update_post_meta( $post_id, '_calendar_week_starts_on_setting', $week_start_setting );
 		$week_start = isset( $_POST['_calendar_week_starts_on'] ) ? intval( $_POST['_calendar_week_starts_on'] ) : get_option( 'start_of_week' );
 		update_post_meta( $post_id, '_calendar_week_starts_on', $week_start );
+
+		// Filtering
+		$pcre = isset( $_POST['_filter_regex_user'] ) ? sanitize_key( $_POST['_filter_regex_user'] ) : '';
+		update_post_meta( $post_id, '_filter_regex_user', $pcre );
 
 		// Cache interval.
 		$cache = 7200;
