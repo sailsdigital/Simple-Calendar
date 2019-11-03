@@ -833,7 +833,7 @@ class Settings implements Meta_Box {
 			$filter_regex = esc_attr( get_post_meta( $post->ID, '_filter_regex_user', true ) );
 			?>
 			<tr class="simcal-panel-field">
-				<th><label for="_feed_cache_user_amount"><?php _ex( 'PCRE Filter', 'Cache maximum interval', 'google-calendar-events' ); ?></label></th>
+				<th><label for="_filter_regex_user"><?php _ex( 'PCRE Filter', 'Cache maximum interval', 'google-calendar-events' ); ?></label></th>
 				<td>
 					<input type="text"
 						   name="_filter_regex_user"
