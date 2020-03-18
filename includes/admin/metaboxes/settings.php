@@ -1053,7 +1053,11 @@ class Settings implements Meta_Box {
 		update_post_meta( $post_id, '_calendar_week_starts_on', $week_start );
 
 		// Filtering
-		$pcre = isset( $_POST['_filter_regex_user'] ) ? sanitize_key( $_POST['_filter_regex_user'] ) : '';
+		if ( isset( $_POST['_filter_regex_user'] ) && preg_match ( '/^(\W).*\1[gmixXsuUAJD]+$/', $_POST['_filter_regex_user'] ) ) {
+			$pcre = wp_slash($_POST['_filter_regex_user']);
+		} else {
+			$pcre = '';
+		}
 		update_post_meta( $post_id, '_filter_regex_user', $pcre );
 
 		// Cache interval.

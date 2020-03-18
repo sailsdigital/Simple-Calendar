@@ -67,6 +67,7 @@ class Grouped_Calendars extends Feed {
 	public function set_source( $ids = array() ) {
 
 		$source = get_post_meta( $this->post_id, '_grouped_calendars_source', true );
+	  $this->filter_regex_user        = get_post_meta( $this->post_id, '_filter_regex_user', true );
 
 		if ( 'ids' == $source ) {
 
@@ -129,7 +130,14 @@ class Grouped_Calendars extends Feed {
 					// When merging the arrays together some of the events will be lost because the keys are the same and one will overwrite the other
 					// This snippet checks if the key already exists in the master events array and if it does it subtracts 1 from it to make the key unique and then unsets the original key.
 					foreach( $calendar->events as $k => $v ) {
-						$calendar->events[ $this->update_array_timestamp( $events, $k ) ] = $v;
+						// Filtering also occurs in this loop.
+						if ( preg_match ( '/^(\W).*\1[gmixXsuUAJD]+$/', $this->filter_regex_user ) && preg_match ( $this->filter_regex_user , strip_tags( $v[0]->title ) ) === 1 ) {
+							// If matched, remove the event from the Array
+							unset ($calendar->events[ $k ]);
+						} else {
+							// Otherwise, adapt the timestamp to avoid collisions
+							$calendar->events[ $this->update_array_timestamp( $events, $k ) ] = $v;
+						}
 					}
 
 					$events = is_array( $calendar->events ) ? $events + $calendar->events : $events;
@@ -159,7 +167,7 @@ class Grouped_Calendars extends Feed {
 			}
 
 		}
-	
+
 		// Sort events by start time before returning
 		uasort( $events, array( $this, 'sort_by_start_time' ) );
 

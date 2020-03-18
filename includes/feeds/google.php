@@ -111,6 +111,7 @@ class Google extends Feed {
             // note that google_search_query is used in a URL param and not as HTML output, so don't use esc_attr() on it
 			$this->google_search_query      = get_post_meta( $this->post_id, '_google_events_search_query', true );
 			$this->google_max_results       = max( absint( get_post_meta( $this->post_id, '_google_events_max_results', true ) ), 1 );
+			$this->filter_regex_user        = get_post_meta( $this->post_id, '_filter_regex_user', true );
 
 			if ( ! is_admin() || defined( 'DOING_AJAX' ) ) {
 				$this->events = ! empty( $this->google_api_key ) ? $this->get_events() : array();
@@ -181,6 +182,11 @@ class Google extends Feed {
 							$status = $event->getStatus();
 							if ( $this->type == 'google' && ( $visibility == 'private' || $visibility == 'confidential' || $status == 'cancelled' ) ) {
 								continue;
+							}
+
+							// Filtering.
+							if ( preg_match ( '/^(\W).*\1[gmixXsuUAJD]+$/', $this->filter_regex_user ) && preg_match ( $this->filter_regex_user , strip_tags( $event->getSummary() ) ) === 1 ) {
+										continue;
 							}
 
 							// Event title & description.
@@ -334,7 +340,6 @@ class Google extends Feed {
 								'recurrence'     => $recurrence,
 								'template'       => $this->events_template,
 							);
-
 						}
 					}
 
